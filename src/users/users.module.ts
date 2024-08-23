@@ -9,6 +9,7 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { ImageService } from 'src/image/image.service';
 import configuration from 'src/config/configuration';
 import { ConfigModule } from '@nestjs/config';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Module({
   imports: [
@@ -28,6 +29,6 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, ReqresApiService, ImageService],
+  providers: [UsersService, ReqresApiService, ImageService, MailerService],
 })
 export class UserModule {}

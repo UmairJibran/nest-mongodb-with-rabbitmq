@@ -10,6 +10,7 @@ import { ReqresApiService } from '../reqres-api/reqres-api.service';
 import { ImageService } from '../image/image.service';
 import { lastValueFrom } from 'rxjs';
 import configuration from 'src/config/configuration';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +19,7 @@ export class UsersService {
     private readonly apiService: ReqresApiService,
     private readonly imageService: ImageService,
     private readonly amqpConnection: AmqpConnection,
+    private readonly mailerService: MailerService,
   ) {}
 
   async create(createUser: CreateUserDto): Promise<User> {
@@ -39,7 +41,8 @@ export class UsersService {
       input.avatar = response.avatar;
     }
     const createdUser = new this.userModel(input);
-    const r = await this.amqpConnection.publish(
+    await this.mailerService.sendMail(createdUser.email);
+    await this.amqpConnection.publish(
       configuration().rabbitMQExchange,
       configuration().rabbitMQRoutingKey,
       {
@@ -50,8 +53,6 @@ export class UsersService {
         avatar: createdUser.avatar,
       },
     );
-
-    console.log(r);
 
     return createdUser.save();
   }
