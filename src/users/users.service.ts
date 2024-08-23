@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 
 import { User, UserDocument } from './schemas/user.mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -8,6 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ReqresApiService } from '../reqres-api/reqres-api.service';
 import { ImageService } from '../image/image.service';
 import { lastValueFrom } from 'rxjs';
+import configuration from 'src/config/configuration';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +17,7 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly apiService: ReqresApiService,
     private readonly imageService: ImageService,
+    private readonly amqpConnection: AmqpConnection,
   ) {}
 
   async create(createUser: CreateUserDto): Promise<User> {
@@ -36,6 +39,20 @@ export class UsersService {
       input.avatar = response.avatar;
     }
     const createdUser = new this.userModel(input);
+    const r = await this.amqpConnection.publish(
+      configuration().rabbitMQExchange,
+      configuration().rabbitMQRoutingKey,
+      {
+        userId: createdUser._id,
+        email: createdUser.email,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
+        avatar: createdUser.avatar,
+      },
+    );
+
+    console.log(r);
+
     return createdUser.save();
   }
 
