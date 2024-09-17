@@ -20,13 +20,18 @@ describe('UsersService', () => {
   let amqpConnection: AmqpConnection;
   let mailerService: MailerService;
 
-  const user = {
-    email: faker.internet.email(),
-    firstName: faker.name.firstName(),
-    lastName: faker.name.lastName(),
+  let user = {
+    email: undefined,
+    firstName: undefined,
+    lastName: undefined,
   };
 
   beforeEach(async () => {
+    user = {
+      email: faker.internet.email(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
@@ -87,6 +92,15 @@ describe('UsersService', () => {
     imageService = module.get<ImageService>(ImageService);
     amqpConnection = module.get<AmqpConnection>(AmqpConnection);
     mailerService = module.get<MailerService>(MailerService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    user = {
+      email: undefined,
+      firstName: undefined,
+      lastName: undefined,
+    };
   });
 
   it('should be defined', () => {
