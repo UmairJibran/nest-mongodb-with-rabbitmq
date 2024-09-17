@@ -40,7 +40,7 @@ export class UsersService {
       input.email = response.email;
       input.avatar = response.avatar;
     }
-    const createdUser = new this.userModel(input);
+    const createdUser = await this.userModel.create(input);
     await this.mailerService.sendMail(createdUser.email);
     await this.amqpConnection.publish(
       configuration().rabbitMQExchange,
