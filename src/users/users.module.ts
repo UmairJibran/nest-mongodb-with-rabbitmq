@@ -3,13 +3,13 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.mongoose';
-import { ReqresApiService } from 'src/reqres-api/reqres-api.service';
+import { ReqresApiService } from '../reqres-api/reqres-api.service';
 import { HttpModule } from '@nestjs/axios';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
-import { ImageService } from 'src/image/image.service';
-import configuration from 'src/config/configuration';
+import { ImageService } from '../image/image.service';
+import configuration from '../config/configuration';
 import { ConfigModule } from '@nestjs/config';
-import { MailerService } from 'src/mailer/mailer.service';
+import { MailerService } from '..//mailer/mailer.service';
 
 @Module({
   imports: [

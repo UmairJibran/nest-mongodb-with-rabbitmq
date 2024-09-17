@@ -9,8 +9,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ReqresApiService } from '../reqres-api/reqres-api.service';
 import { ImageService } from '../image/image.service';
 import { lastValueFrom } from 'rxjs';
-import configuration from 'src/config/configuration';
-import { MailerService } from 'src/mailer/mailer.service';
+import configuration from '../config/configuration';
+import { MailerService } from '../mailer/mailer.service';
 
 @Injectable()
 export class UsersService {
@@ -40,7 +40,7 @@ export class UsersService {
       input.email = response.email;
       input.avatar = response.avatar;
     }
-    const createdUser = new this.userModel(input);
+    const createdUser = await this.userModel.create(input);
     await this.mailerService.sendMail(createdUser.email);
     await this.amqpConnection.publish(
       configuration().rabbitMQExchange,

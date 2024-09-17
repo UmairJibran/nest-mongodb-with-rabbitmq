@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
-import configuration from 'src/config/configuration';
+import configuration from '../config/configuration';
 
 @Injectable()
 export class ReqresApiService {
